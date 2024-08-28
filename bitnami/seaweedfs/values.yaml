@@ -9,7 +9,8 @@
 
 ## @param global.imageRegistry Global Docker image registry
 ## @param global.imagePullSecrets Global Docker registry secret names as an array
-## @param global.storageClass Global StorageClass for Persistent Volume(s)
+## @param global.defaultStorageClass Global default StorageClass for Persistent Volume(s)
+## @param global.storageClass DEPRECATED: use global.defaultStorageClass instead
 ##
 global:
   imageRegistry: ""
@@ -18,6 +19,7 @@ global:
   ##   - myRegistryKeySecretName
   ##
   imagePullSecrets: []
+  defaultStorageClass: ""
   storageClass: ""
   ## Compatibility adaptations for Kubernetes platforms
   ##
@@ -80,7 +82,7 @@ diagnosticMode:
 image:
   registry: docker.io
   repository: bitnami/seaweedfs
-  tag: 3.67.0-debian-12-r1
+  tag: 3.72.0-debian-12-r0
   digest: ""
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
@@ -459,11 +461,11 @@ master:
   ## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb
   ## @param master.pdb.create Enable/disable a Pod Disruption Budget creation
   ## @param master.pdb.minAvailable Minimum number/percentage of pods that should remain scheduled
-  ## @param master.pdb.maxUnavailable Maximum number/percentage of pods that may be made unavailable
+  ## @param master.pdb.maxUnavailable Maximum number/percentage of pods that may be made unavailable. Defaults to `1` if both `master.pdb.minAvailable` and `master.pdb.maxUnavailable` are empty.
   ##
   pdb:
-    create: false
-    minAvailable: 1
+    create: true
+    minAvailable: ""
     maxUnavailable: ""
   ## Autoscaling configuration
   ## ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
@@ -1099,11 +1101,11 @@ volume:
   ## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb
   ## @param volume.pdb.create Enable/disable a Pod Disruption Budget creation
   ## @param volume.pdb.minAvailable Minimum number/percentage of pods that should remain scheduled
-  ## @param volume.pdb.maxUnavailable Maximum number/percentage of pods that may be made unavailable
+  ## @param volume.pdb.maxUnavailable Maximum number/percentage of pods that may be made unavailable. Defaults to `1` if both `volume.pdb.minAvailable` and `volume.pdb.maxUnavailable` are empty.
   ##
   pdb:
-    create: false
-    minAvailable: 1
+    create: true
+    minAvailable: ""
     maxUnavailable: ""
   ## Autoscaling configuration
   ## ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
@@ -1746,11 +1748,11 @@ filer:
   ## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb
   ## @param filer.pdb.create Enable/disable a Pod Disruption Budget creation
   ## @param filer.pdb.minAvailable Minimum number/percentage of pods that should remain scheduled
-  ## @param filer.pdb.maxUnavailable Maximum number/percentage of pods that may be made unavailable
+  ## @param filer.pdb.maxUnavailable Maximum number/percentage of pods that may be made unavailable. Defaults to `1` if both `filer.pdb.minAvailable` and `filer.pdb.maxUnavailable` are empty.
   ##
   pdb:
-    create: false
-    minAvailable: 1
+    create: true
+    minAvailable: ""
     maxUnavailable: ""
   ## Autoscaling configuration
   ## ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
@@ -2344,11 +2346,11 @@ s3:
   ## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb
   ## @param s3.pdb.create Enable/disable a Pod Disruption Budget creation
   ## @param s3.pdb.minAvailable Minimum number/percentage of pods that should remain scheduled
-  ## @param s3.pdb.maxUnavailable Maximum number/percentage of pods that may be made unavailable
+  ## @param s3.pdb.maxUnavailable Maximum number/percentage of pods that may be made unavailable. Defaults to `1` if both `s3.pdb.minAvailable` and `s3.pdb.maxUnavailable` are empty.
   ##
   pdb:
-    create: false
-    minAvailable: 1
+    create: true
+    minAvailable: ""
     maxUnavailable: ""
   ## Autoscaling configuration
   ## ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
@@ -2948,11 +2950,11 @@ webdav:
   ## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb
   ## @param webdav.pdb.create Enable/disable a Pod Disruption Budget creation
   ## @param webdav.pdb.minAvailable Minimum number/percentage of pods that should remain scheduled
-  ## @param webdav.pdb.maxUnavailable Maximum number/percentage of pods that may be made unavailable
+  ## @param webdav.pdb.maxUnavailable Maximum number/percentage of pods that may be made unavailable. Defaults to `1` if both `webdav.pdb.minAvailable` and `webdav.pdb.maxUnavailable` are empty.
   ##
   pdb:
-    create: false
-    minAvailable: 1
+    create: true
+    minAvailable: ""
     maxUnavailable: ""
   ## Autoscaling configuration
   ## ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
@@ -3213,7 +3215,7 @@ volumePermissions:
   image:
     registry: docker.io
     repository: bitnami/os-shell
-    tag: 12-debian-12-r20
+    tag: 12-debian-12-r27
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -3357,6 +3359,9 @@ mariadb:
 ## All of these values are only used if `mariadb.enabled=false`
 ##
 externalDatabase:
+  ## @param externalDatabase.enabled Enable secret with external mariadb database credentials
+  ##
+  enabled: false
   ## @param externalDatabase.host External Database server host
   ##
   host: localhost

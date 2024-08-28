@@ -9,7 +9,8 @@
 
 ## @param global.imageRegistry Global Docker image registry
 ## @param global.imagePullSecrets Global Docker registry secret names as an array
-## @param global.storageClass Global StorageClass for Persistent Volume(s)
+## @param global.defaultStorageClass Global default StorageClass for Persistent Volume(s)
+## @param global.storageClass DEPRECATED: use global.defaultStorageClass instead
 ##
 global:
   imageRegistry: ""
@@ -18,6 +19,7 @@ global:
   ##   - myRegistryKeySecretName
   ##
   imagePullSecrets: []
+  defaultStorageClass: ""
   storageClass: ""
   ## Compatibility adaptations for Kubernetes platforms
   ##
@@ -68,7 +70,7 @@ extraDeploy: []
 image:
   registry: docker.io
   repository: bitnami/matomo
-  tag: 5.0.3-debian-12-r4
+  tag: 5.1.1-debian-12-r1
   digest: ""
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
@@ -115,7 +117,7 @@ matomoWebsiteHost: https://example.org
 ##
 matomoSkipInstall: false
 ## @param customPostInitScripts Custom post-init.d user scripts
-## ref: https://github.com/bitnami/containers/tree/main/bitnami/dokuwiki
+## ref: https://github.com/bitnami/containers/tree/main/bitnami/matomo
 ## NOTE: supported formats are `.sh` or `.php`
 ## NOTE: scripts are exclusively executed during the 1st boot of the container
 ## e.g:
@@ -191,6 +193,16 @@ extraVolumeMounts: []
 ## @param initContainers Add additional init containers to the pod (evaluated as a template)
 ##
 initContainers: []
+## Pod Disruption Budget configuration
+## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb
+## @param pdb.create Enable/disable a Pod Disruption Budget creation
+## @param pdb.minAvailable Minimum number/percentage of pods that should remain scheduled
+## @param pdb.maxUnavailable Maximum number/percentage of pods that may be made unavailable. Defaults to `1` if both `pdb.minAvailable` and `pdb.maxUnavailable` are empty.
+##
+pdb:
+  create: true
+  minAvailable: ""
+  maxUnavailable: ""
 ## @param sidecars Attach additional containers to the pod (evaluated as a template)
 ##
 sidecars: []
@@ -408,13 +420,8 @@ startupProbe:
   failureThreshold: 5
   successThreshold: 1
 ## Configure extra options for liveness probe
-## Matomo core exposes / to unauthenticated requests, making it a good
-## default liveness and readiness path. However, that may not always be the
-## case. For example, if the image value is overridden to an image containing a
-## module that alters that route, or an image that does not auto-install Matomo.
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
 ## @param livenessProbe.enabled Enable livenessProbe
-## @param livenessProbe.path Request path for livenessProbe
 ## @param livenessProbe.initialDelaySeconds Initial delay seconds for livenessProbe
 ## @param livenessProbe.periodSeconds Period seconds for livenessProbe
 ## @param livenessProbe.timeoutSeconds Timeout seconds for livenessProbe
@@ -423,7 +430,6 @@ startupProbe:
 ##
 livenessProbe:
   enabled: true
-  path: /matomo.php
   initialDelaySeconds: 600
   periodSeconds: 10
   timeoutSeconds: 5
@@ -431,7 +437,7 @@ livenessProbe:
   successThreshold: 1
 ## Configure extra options for readiness probe
 ## Matomo core exposes / to unauthenticated requests, making it a good
-## default liveness and readiness path. However, that may not always be the
+## default startup and readiness path. However, that may not always be the
 ## case. For example, if the image value is overridden to an image containing a
 ## module that alters that route, or an image that does not auto-install Matomo.
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
@@ -741,7 +747,7 @@ volumePermissions:
   image:
     registry: docker.io
     repository: bitnami/os-shell
-    tag: 12-debian-12-r18
+    tag: 12-debian-12-r27
     digest: ""
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
@@ -792,7 +798,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/apache-exporter
-    tag: 1.0.7-debian-12-r3
+    tag: 1.0.8-debian-12-r7
     digest: ""
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
@@ -874,7 +880,7 @@ certificates:
   image:
     registry: docker.io
     repository: bitnami/os-shell
-    tag: 12-debian-12-r18
+    tag: 12-debian-12-r27
     digest: ""
     ## Specify a imagePullPolicy
     ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'

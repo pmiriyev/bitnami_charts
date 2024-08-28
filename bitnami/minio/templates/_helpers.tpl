@@ -41,7 +41,7 @@ otherwise it generates a random value.
 {{- define "getValueFromSecret" }}
 {{- $len := (default 16 .Length) | int -}}
 {{- $obj := (lookup "v1" "Secret" .Namespace .Name).data -}}
-{{- if $obj }}
+{{- if and $obj (hasKey $obj .Key)}}
 {{- index $obj .Key | b64dec -}}
 {{- else -}}
 {{- randAlphaNum $len -}}
@@ -113,7 +113,7 @@ Return true if a secret object should be created
 {{- define "minio.createSecret" -}}
 {{- if .Values.auth.existingSecret -}}
 {{- else -}}
-    {{- true -}}
+    {{- .Values.auth.useSecret -}}
 {{- end -}}
 {{- end -}}
 
@@ -184,7 +184,8 @@ Validate values of MinIO&reg; - total number of drives should be greater than 4
 {{- define "minio.validateValues.totalDrives" -}}
 {{- $replicaCount := int .Values.statefulset.replicaCount }}
 {{- $drivesPerNode := int .Values.statefulset.drivesPerNode }}
-{{- $totalDrives := mul $replicaCount $drivesPerNode }}
+{{- $zones := int .Values.statefulset.zones }}
+{{- $totalDrives := mul $replicaCount $zones $drivesPerNode }}
 {{- if and (eq .Values.mode "distributed") (lt $totalDrives 4) -}}
 minio: total drives
     The total number of drives should be greater than 4 to guarantee erasure coding!

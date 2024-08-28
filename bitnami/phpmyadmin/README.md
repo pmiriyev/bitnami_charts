@@ -14,7 +14,7 @@ Trademarks: This software listing is packaged by Bitnami. The respective tradema
 helm install my-release oci://registry-1.docker.io/bitnamicharts/phpmyadmin
 ```
 
-Looking to use phpMyAdmin in production? Try [VMware Tanzu Application Catalog](https://bitnami.com/enterprise), the enterprise edition of Bitnami Application Catalog.
+Looking to use phpMyAdmin in production? Try [VMware Tanzu Application Catalog](https://bitnami.com/enterprise), the commercial edition of the Bitnami catalog.
 
 ## Introduction
 
@@ -164,6 +164,7 @@ As an alternative, you can use of the preset configurations for pod affinity, po
 | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
 | `global.imageRegistry`                                | Global Docker image registry                                                                                                                                                                                                                                                                                                                                        | `""`       |
 | `global.imagePullSecrets`                             | Global Docker registry secret names as an array                                                                                                                                                                                                                                                                                                                     | `[]`       |
+| `global.defaultStorageClass`                          | Global default StorageClass for Persistent Volume(s)                                                                                                                                                                                                                                                                                                                | `""`       |
 | `global.compatibility.openshift.adaptSecurityContext` | Adapt the securityContext sections of the deployment to make them compatible with Openshift restricted-v2 SCC: remove runAsUser, runAsGroup and fsGroup and let the platform use their allowed default IDs. Possible values: auto (apply if the detected running cluster is Openshift), force (perform the adaptation always), disabled (do not perform adaptation) | `disabled` |
 
 ### Common parameters
@@ -232,8 +233,7 @@ As an alternative, you can use of the preset configurations for pod affinity, po
 | `startupProbe.failureThreshold`                     | Failure threshold for startupProbe                                                                                                                                                                                | `6`              |
 | `startupProbe.successThreshold`                     | Success threshold for startupProbe                                                                                                                                                                                | `1`              |
 | `livenessProbe.enabled`                             | Enable livenessProbe                                                                                                                                                                                              | `true`           |
-| `livenessProbe.httpGet.path`                        | Request path for livenessProbe                                                                                                                                                                                    | `/`              |
-| `livenessProbe.httpGet.port`                        | Port for livenessProbe                                                                                                                                                                                            | `http`           |
+| `livenessProbe.tcpSocket.port`                      | Port for livenessProbe                                                                                                                                                                                            | `http`           |
 | `livenessProbe.initialDelaySeconds`                 | Initial delay seconds for livenessProbe                                                                                                                                                                           | `30`             |
 | `livenessProbe.periodSeconds`                       | Period seconds for livenessProbe                                                                                                                                                                                  | `10`             |
 | `livenessProbe.timeoutSeconds`                      | Timeout seconds for livenessProbe                                                                                                                                                                                 | `30`             |
@@ -266,6 +266,9 @@ As an alternative, you can use of the preset configurations for pod affinity, po
 | `extraVolumes`                                      | Optionally specify extra list of additional volumes for PhpMyAdmin pods                                                                                                                                           | `[]`             |
 | `extraVolumeMounts`                                 | Optionally specify extra list of additional volumeMounts for PhpMyAdmin container(s)                                                                                                                              | `[]`             |
 | `initContainers`                                    | Add init containers to the PhpMyAdmin pods                                                                                                                                                                        | `[]`             |
+| `pdb.create`                                        | Enable/disable a Pod Disruption Budget creation                                                                                                                                                                   | `true`           |
+| `pdb.minAvailable`                                  | Minimum number/percentage of pods that should remain scheduled                                                                                                                                                    | `""`             |
+| `pdb.maxUnavailable`                                | Maximum number/percentage of pods that may be made unavailable. Defaults to `1` if both `pdb.minAvailable` and `pdb.maxUnavailable` are empty.                                                                    | `""`             |
 | `sidecars`                                          | Add sidecar containers to the PhpMyAdmin pods                                                                                                                                                                     | `[]`             |
 
 ### Traffic Exposure parameters
@@ -397,6 +400,10 @@ helm install my-release -f values.yaml oci://REGISTRY_NAME/REPOSITORY_NAME/phpmy
 Find more information about how to deal with common errors related to Bitnami's Helm charts in [this troubleshooting guide](https://docs.bitnami.com/general/how-to/troubleshoot-helm-chart-issues).
 
 ## Upgrading
+
+### To 17.0.0
+
+This major release bumps the MariaDB version to 11.4. Follow the [upstream instructions](https://mariadb.com/kb/en/upgrading-from-mariadb-11-3-to-mariadb-11-4/) for upgrading from MariaDB 11.3 to 11.4. No major issues are expected during the upgrade.
 
 ### To 16.0.0
 

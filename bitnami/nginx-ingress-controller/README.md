@@ -14,7 +14,7 @@ Trademarks: This software listing is packaged by Bitnami. The respective tradema
 helm install my-release oci://registry-1.docker.io/bitnamicharts/nginx-ingress-controller
 ```
 
-Looking to use NGINX Ingress Controller in production? Try [VMware Tanzu Application Catalog](https://bitnami.com/enterprise), the enterprise edition of Bitnami Application Catalog.
+Looking to use NGINX Ingress Controller in production? Try [VMware Tanzu Application Catalog](https://bitnami.com/enterprise), the commercial edition of the Bitnami catalog.
 
 ## Introduction
 
@@ -327,9 +327,9 @@ As an alternative, you can use of the preset configurations for pod affinity, po
 | `defaultBackend.networkPolicy.extraEgress`                         | Add extra ingress rules to the NetworkPolicy                                                                                                                                                                                                    | `[]`                    |
 | `defaultBackend.networkPolicy.ingressNSMatchLabels`                | Labels to match to allow traffic from other namespaces                                                                                                                                                                                          | `{}`                    |
 | `defaultBackend.networkPolicy.ingressNSPodMatchLabels`             | Pod labels to match to allow traffic from other namespaces                                                                                                                                                                                      | `{}`                    |
-| `defaultBackend.pdb.create`                                        | Enable/disable a Pod Disruption Budget creation for Default backend                                                                                                                                                                             | `false`                 |
-| `defaultBackend.pdb.minAvailable`                                  | Minimum number/percentage of Default backend pods that should remain scheduled                                                                                                                                                                  | `1`                     |
-| `defaultBackend.pdb.maxUnavailable`                                | Maximum number/percentage of Default backend pods that may be made unavailable                                                                                                                                                                  | `""`                    |
+| `defaultBackend.pdb.create`                                        | Enable/disable a Pod Disruption Budget creation for Default backend                                                                                                                                                                             | `true`                  |
+| `defaultBackend.pdb.minAvailable`                                  | Minimum number/percentage of Default backend pods that should remain scheduled                                                                                                                                                                  | `""`                    |
+| `defaultBackend.pdb.maxUnavailable`                                | Maximum number/percentage of pods that may be made unavailable. Defaults to `1` if both `defaultBackend.pdb.minAvailable` and `defaultBackend.pdb.maxUnavailable` are empty.                                                                    | `""`                    |
 
 ### Traffic exposure parameters
 
@@ -345,6 +345,7 @@ As an alternative, you can use of the preset configurations for pod affinity, po
 | `service.externalIPs`                   | Controller Service external IP addresses                                                                                               | `[]`           |
 | `service.ipFamilyPolicy`                | Controller Service ipFamilyPolicy (optional, cloud specific)                                                                           | `""`           |
 | `service.ipFamilies`                    | Controller Service ipFamilies (optional, cloud specific)                                                                               | `[]`           |
+| `service.loadBalancerClass`             | Load balancer class if service type is `LoadBalancer`                                                                                  | `""`           |
 | `service.loadBalancerIP`                | Kubernetes LoadBalancerIP to request for Controller (optional, cloud specific)                                                         | `""`           |
 | `service.loadBalancerSourceRanges`      | List of IP CIDRs allowed access to load balancer (if supported)                                                                        | `[]`           |
 | `service.extraPorts`                    | Extra ports to expose (normally used with the `sidecar` value)                                                                         | `[]`           |
@@ -374,16 +375,16 @@ As an alternative, you can use of the preset configurations for pod affinity, po
 
 ### Other parameters
 
-| Name                       | Description                                                               | Value   |
-| -------------------------- | ------------------------------------------------------------------------- | ------- |
-| `pdb.create`               | Enable/disable a Pod Disruption Budget creation for Controller            | `false` |
-| `pdb.minAvailable`         | Minimum number/percentage of Controller pods that should remain scheduled | `1`     |
-| `pdb.maxUnavailable`       | Maximum number/percentage of Controller pods that may be made unavailable | `""`    |
-| `autoscaling.enabled`      | Enable autoscaling for Controller                                         | `false` |
-| `autoscaling.minReplicas`  | Minimum number of Controller replicas                                     | `1`     |
-| `autoscaling.maxReplicas`  | Maximum number of Controller replicas                                     | `11`    |
-| `autoscaling.targetCPU`    | Target CPU utilization percentage                                         | `""`    |
-| `autoscaling.targetMemory` | Target Memory utilization percentage                                      | `""`    |
+| Name                       | Description                                                                                                                                    | Value   |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| `pdb.create`               | Enable/disable a Pod Disruption Budget creation for Controller                                                                                 | `true`  |
+| `pdb.minAvailable`         | Minimum number/percentage of Controller pods that should remain scheduled                                                                      | `""`    |
+| `pdb.maxUnavailable`       | Maximum number/percentage of pods that may be made unavailable. Defaults to `1` if both `pdb.minAvailable` and `pdb.maxUnavailable` are empty. | `""`    |
+| `autoscaling.enabled`      | Enable autoscaling for Controller                                                                                                              | `false` |
+| `autoscaling.minReplicas`  | Minimum number of Controller replicas                                                                                                          | `1`     |
+| `autoscaling.maxReplicas`  | Maximum number of Controller replicas                                                                                                          | `11`    |
+| `autoscaling.targetCPU`    | Target CPU utilization percentage                                                                                                              | `""`    |
+| `autoscaling.targetMemory` | Target Memory utilization percentage                                                                                                           | `""`    |
 
 ### Metrics parameters
 

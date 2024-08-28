@@ -14,7 +14,7 @@ Trademarks: This software listing is packaged by Bitnami. The respective tradema
 helm install my-release oci://registry-1.docker.io/bitnamicharts/odoo
 ```
 
-Looking to use Odoo in production? Try [VMware Tanzu Application Catalog](https://bitnami.com/enterprise), the enterprise edition of Bitnami Application Catalog.
+Looking to use Odoo in production? Try [VMware Tanzu Application Catalog](https://bitnami.com/enterprise), the commercial edition of the Bitnami catalog.
 
 ## Introduction
 
@@ -114,7 +114,8 @@ See the [Parameters](#parameters) section to configure the PVC or to disable per
 | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
 | `global.imageRegistry`                                | Global Docker image registry                                                                                                                                                                                                                                                                                                                                        | `""`       |
 | `global.imagePullSecrets`                             | Global Docker registry secret names as an array                                                                                                                                                                                                                                                                                                                     | `[]`       |
-| `global.storageClass`                                 | Global StorageClass for Persistent Volume(s)                                                                                                                                                                                                                                                                                                                        | `""`       |
+| `global.defaultStorageClass`                          | Global default StorageClass for Persistent Volume(s)                                                                                                                                                                                                                                                                                                                | `""`       |
+| `global.storageClass`                                 | DEPRECATED: use global.defaultStorageClass instead                                                                                                                                                                                                                                                                                                                  | `""`       |
 | `global.compatibility.openshift.adaptSecurityContext` | Adapt the securityContext sections of the deployment to make them compatible with Openshift restricted-v2 SCC: remove runAsUser, runAsGroup and fsGroup and let the platform use their allowed default IDs. Possible values: auto (apply if the detected running cluster is Openshift), force (perform the adaptation always), disabled (do not perform adaptation) | `disabled` |
 
 ### Common parameters
@@ -188,7 +189,6 @@ See the [Parameters](#parameters) section to configure the PVC or to disable per
 | `containerSecurityContext.capabilities.drop`        | List of capabilities to be dropped                                                                                                                                                                                | `["ALL"]`                                                          |
 | `containerSecurityContext.seccompProfile.type`      | Set container's Security Context seccomp profile                                                                                                                                                                  | `RuntimeDefault`                                                   |
 | `livenessProbe.enabled`                             | Enable livenessProbe                                                                                                                                                                                              | `true`                                                             |
-| `livenessProbe.path`                                | Path for to check for livenessProbe                                                                                                                                                                               | `/web/health`                                                      |
 | `livenessProbe.initialDelaySeconds`                 | Initial delay seconds for livenessProbe                                                                                                                                                                           | `600`                                                              |
 | `livenessProbe.periodSeconds`                       | Period seconds for livenessProbe                                                                                                                                                                                  | `30`                                                               |
 | `livenessProbe.timeoutSeconds`                      | Timeout seconds for livenessProbe                                                                                                                                                                                 | `5`                                                                |
@@ -298,16 +298,16 @@ See the [Parameters](#parameters) section to configure the PVC or to disable per
 
 ### Other Parameters
 
-| Name                       | Description                                                    | Value   |
-| -------------------------- | -------------------------------------------------------------- | ------- |
-| `pdb.create`               | Enable a Pod Disruption Budget creation                        | `false` |
-| `pdb.minAvailable`         | Minimum number/percentage of pods that should remain scheduled | `1`     |
-| `pdb.maxUnavailable`       | Maximum number/percentage of pods that may be made unavailable | `""`    |
-| `autoscaling.enabled`      | Enable Horizontal POD autoscaling for Odoo                     | `false` |
-| `autoscaling.minReplicas`  | Minimum number of Odoo replicas                                | `1`     |
-| `autoscaling.maxReplicas`  | Maximum number of Odoo replicas                                | `11`    |
-| `autoscaling.targetCPU`    | Target CPU utilization percentage                              | `50`    |
-| `autoscaling.targetMemory` | Target Memory utilization percentage                           | `50`    |
+| Name                       | Description                                                                                                                                    | Value   |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| `pdb.create`               | Enable a Pod Disruption Budget creation                                                                                                        | `true`  |
+| `pdb.minAvailable`         | Minimum number/percentage of pods that should remain scheduled                                                                                 | `""`    |
+| `pdb.maxUnavailable`       | Maximum number/percentage of pods that may be made unavailable. Defaults to `1` if both `pdb.minAvailable` and `pdb.maxUnavailable` are empty. | `""`    |
+| `autoscaling.enabled`      | Enable Horizontal POD autoscaling for Odoo                                                                                                     | `false` |
+| `autoscaling.minReplicas`  | Minimum number of Odoo replicas                                                                                                                | `1`     |
+| `autoscaling.maxReplicas`  | Maximum number of Odoo replicas                                                                                                                | `11`    |
+| `autoscaling.targetCPU`    | Target CPU utilization percentage                                                                                                              | `50`    |
+| `autoscaling.targetMemory` | Target Memory utilization percentage                                                                                                           | `50`    |
 
 ### Database Parameters
 

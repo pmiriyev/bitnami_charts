@@ -83,7 +83,6 @@ spec:
       terminationGracePeriodSeconds: {{ .Values.hidden.terminationGracePeriodSeconds }}
       {{- end }}
       enableServiceLinks: {{ .Values.enableServiceLinks }}
-      {{- if or .Values.hidden.initContainers (and .Values.volumePermissions.enabled .Values.hidden.persistence.enabled) (and .Values.externalAccess.hidden.enabled .Values.externalAccess.autoDiscovery.enabled) .Values.tls.enabled }}
       initContainers:
         {{- if .Values.hidden.initContainers }}
         {{- include "common.tplvalues.render" (dict "value" .Values.hidden.initContainers "context" $) | nindent 8 }}
@@ -97,6 +96,7 @@ spec:
         {{- if and .Values.externalAccess.enabled ( or .Values.externalAccess.service.publicNames  .Values.externalAccess.service.domain ) }}
         {{- include "mongodb.initContainers.dnsCheck" . | indent 8 }}
         {{- end }}
+        {{- include "mongodb.initContainer.prepareLogDir" . | nindent 8 }}
         {{- if .Values.tls.enabled }}
         - name: generate-tls-certs
           image: {{ include "mongodb.tls.image" . }}
@@ -147,7 +147,6 @@ spec:
           resources: {{- include "common.resources.preset" (dict "type" .Values.tls.resourcesPreset) | nindent 12 }}
           {{- end }}
         {{- end }}
-      {{- end }}
       containers:
         - name: mongodb
           image: {{ include "mongodb.image" . }}
@@ -309,7 +308,7 @@ spec:
           readinessProbe: {{- include "common.tplvalues.render" (dict "value" (omit .Values.hidden.readinessProbe "enabled") "context" $) | nindent 12 }}
             exec:
               command:
-                - /bitnami/scripts/ping-mongodb.sh
+                - /bitnami/scripts/readiness-probe.sh
           {{- end }}
           {{- if .Values.hidden.customStartupProbe }}
           startupProbe: {{- include "common.tplvalues.render" (dict "value" .Values.hidden.customStartupProbe "context" $) | nindent 12 }}
@@ -436,8 +435,7 @@ spec:
           livenessProbe: {{- include "common.tplvalues.render" (dict "value" .Values.metrics.customLivenessProbe "context" $) | nindent 12 }}
           {{- else if .Values.metrics.livenessProbe.enabled }}
           livenessProbe: {{- include "common.tplvalues.render" (dict "value" (omit .Values.metrics.livenessProbe "enabled") "context" $) | nindent 12 }}
-            httpGet:
-              path: /
+            tcpSocket:
               port: metrics
           {{- end }}
           {{- if .Values.metrics.customReadinessProbe }}
@@ -530,6 +528,9 @@ spec:
         name: datadir
         {{- if .Values.hidden.persistence.annotations }}
         annotations: {{- include "common.tplvalues.render" (dict "value" .Values.hidden.persistence.annotations "context" $) | nindent 10 }}
+        {{- end }}
+        {{- if .Values.persistence.labels }}
+        labels: {{- include "common.tplvalues.render" (dict "value" .Values.persistence.labels "context" $) | nindent 10 }}
         {{- end }}
       spec:
         accessModes:

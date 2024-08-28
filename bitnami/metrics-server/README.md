@@ -14,7 +14,7 @@ Trademarks: This software listing is packaged by Bitnami. The respective tradema
 helm install my-release oci://registry-1.docker.io/bitnamicharts/metrics-server
 ```
 
-Looking to use Metrics Server in production? Try [VMware Tanzu Application Catalog](https://bitnami.com/enterprise), the enterprise edition of Bitnami Application Catalog.
+Looking to use Metrics Server in production? Try [VMware Tanzu Application Catalog](https://bitnami.com/enterprise), the commercial edition of the Bitnami catalog.
 
 ## Introduction
 
@@ -134,7 +134,7 @@ As an alternative, you can use one of the preset configurations for pod affinity
 | `terminationGracePeriodSeconds`                     | In seconds, time the given to the metrics-server pod needs to terminate gracefully                                                                                                                                | `""`                             |
 | `podAffinityPreset`                                 | Pod affinity preset. Ignored if `affinity` is set. Allowed values: `soft` or `hard`                                                                                                                               | `""`                             |
 | `podAntiAffinityPreset`                             | Pod anti-affinity preset. Ignored if `affinity` is set. Allowed values: `soft` or `hard`                                                                                                                          | `soft`                           |
-| `pdb.create`                                        | Create a PodDisruptionBudget                                                                                                                                                                                      | `false`                          |
+| `pdb.create`                                        | Create a PodDisruptionBudget                                                                                                                                                                                      | `true`                           |
 | `pdb.minAvailable`                                  | Minimum available instances                                                                                                                                                                                       | `""`                             |
 | `pdb.maxUnavailable`                                | Maximum unavailable instances                                                                                                                                                                                     | `""`                             |
 | `nodeAffinityPreset.type`                           | Node affinity preset type. Ignored if `affinity` is set. Allowed values: `soft` or `hard`                                                                                                                         | `""`                             |

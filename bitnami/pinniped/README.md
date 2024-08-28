@@ -14,7 +14,7 @@ Trademarks: This software listing is packaged by Bitnami. The respective tradema
 helm install my-release oci://registry-1.docker.io/bitnamicharts/pinniped
 ```
 
-Looking to use Pinniped in production? Try [VMware Tanzu Application Catalog](https://bitnami.com/enterprise), the enterprise edition of Bitnami Application Catalog.
+Looking to use Pinniped in production? Try [VMware Tanzu Application Catalog](https://bitnami.com/enterprise), the commercial edition of the Bitnami catalog.
 
 ## Introduction
 
@@ -128,7 +128,8 @@ The [Bitnami pinniped](https://github.com/bitnami/containers/tree/main/bitnami/p
 | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
 | `global.imageRegistry`                                | Global Docker image registry                                                                                                                                                                                                                                                                                                                                        | `""`   |
 | `global.imagePullSecrets`                             | Global Docker registry secret names as an array                                                                                                                                                                                                                                                                                                                     | `[]`   |
-| `global.storageClass`                                 | Global StorageClass for Persistent Volume(s)                                                                                                                                                                                                                                                                                                                        | `""`   |
+| `global.defaultStorageClass`                          | Global default StorageClass for Persistent Volume(s)                                                                                                                                                                                                                                                                                                                | `""`   |
+| `global.storageClass`                                 | DEPRECATED: use global.defaultStorageClass instead                                                                                                                                                                                                                                                                                                                  | `""`   |
 | `global.compatibility.openshift.adaptSecurityContext` | Adapt the securityContext sections of the deployment to make them compatible with Openshift restricted-v2 SCC: remove runAsUser, runAsGroup and fsGroup and let the platform use their allowed default IDs. Possible values: auto (apply if the detected running cluster is Openshift), force (perform the adaptation always), disabled (do not perform adaptation) | `auto` |
 
 ### Common parameters
@@ -230,6 +231,9 @@ The [Bitnami pinniped](https://github.com/bitnami/containers/tree/main/bitnami/p
 | `concierge.extraVolumeMounts`                                 | Optionally specify extra list of additional volumeMounts for the Concierge container(s)                                                                                                                                               | `[]`             |
 | `concierge.sidecars`                                          | Add additional sidecar containers to the Concierge pod(s)                                                                                                                                                                             | `[]`             |
 | `concierge.initContainers`                                    | Add additional init containers to the Concierge pod(s)                                                                                                                                                                                | `[]`             |
+| `concierge.pdb.create`                                        | Enable/disable a Pod Disruption Budget creation                                                                                                                                                                                       | `true`           |
+| `concierge.pdb.minAvailable`                                  | Minimum number/percentage of pods that should remain scheduled                                                                                                                                                                        | `""`             |
+| `concierge.pdb.maxUnavailable`                                | Maximum number/percentage of pods that may be made unavailable. Defaults to `1` if both `concierge.pdb.minAvailable` and `concierge.pdb.maxUnavailable` are empty.                                                                    | `""`             |
 
 ### Concierge RBAC settings
 
@@ -350,6 +354,9 @@ The [Bitnami pinniped](https://github.com/bitnami/containers/tree/main/bitnami/p
 | `supervisor.extraVolumeMounts`                                 | Optionally specify extra list of additional volumeMounts for the Supervisor container(s)                                                                                                                                                | `[]`             |
 | `supervisor.sidecars`                                          | Add additional sidecar containers to the Supervisor pod(s)                                                                                                                                                                              | `[]`             |
 | `supervisor.initContainers`                                    | Add additional init containers to the Supervisor pod(s)                                                                                                                                                                                 | `[]`             |
+| `supervisor.pdb.create`                                        | Enable/disable a Pod Disruption Budget creation                                                                                                                                                                                         | `true`           |
+| `supervisor.pdb.minAvailable`                                  | Minimum number/percentage of pods that should remain scheduled                                                                                                                                                                          | `""`             |
+| `supervisor.pdb.maxUnavailable`                                | Maximum number/percentage of pods that may be made unavailable. Defaults to `1` if both `supervisor.pdb.minAvailable` and `supervisor.pdb.maxUnavailable` are empty.                                                                    | `""`             |
 
 ### Supervisor RBAC settings
 
